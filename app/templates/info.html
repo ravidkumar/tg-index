@@ -11,16 +11,62 @@
                             {% if media.image %}
                                 <img class="mx-auto rounded" src="../{{id}}/thumbnail" alt="{{name}}">
                             {% elif media.video %}
+                                <div id="video-warning" class="mx-auto p-4 bg-gray-600 text-gray-300 rounded border text-center hidden break-words">
+                                    <p> Video {{name}} could not be played!</p>
+                                </div>
+                                
                                 <video id="my-video-player" class="mx-auto rounded" controls poster="../{{id}}/thumbnail">
-                                    <source src="../{{id}}/download" type="{{ media.type }}" />
+                                    <source src="../{{id}}/download" type="video/mp4" />
                                 </video>
+                                
+                                <script>
+                                    var video = document.querySelector("video");
+                                    var src = video.firstElementChild
+
+                                    src.addEventListener('error', function(evt) {
+                                        console.log(evt);
+                                        document.getElementById('my-video-player').style.display = 'none';
+                                        document.getElementById('video-warning').style.display = 'block';
+                                    }); 
+                                    var myFP = fluidPlayer(
+                                        'my-video-player',{
+                                            "layoutControls": {
+                                                "autoPlay": false,
+                                                "mute": true,
+                                                "allowTheatre": true,
+                                                "playPauseAnimation": true,
+                                                "playbackRateEnabled": true,
+                                                "allowDownload": false,
+                                                "playButtonShowing": true,
+                                                "fillToContainer": true,
+                                                "posterImage": ""
+                                            }
+                                        }
+                                    );
+                                </script>
                             {% elif media.audio %}
-                                <audio class="mx-auto" controls autoplay muted src="../{{id}}/download" type="{{ media.type }}"></audio>
+                                 <div id="audio-warning" class="mx-auto p-4 bg-gray-600 text-gray-300 rounded border text-center hidden break-words">
+                                    <p> Audio {{name}} could not be played!</p>
+                                </div>
+                                
+                                <audio id="my-audio" class="mx-auto" controls muted>
+                                    <source src="../{{id}}/download" type="audio/mpeg" />
+                                </audio>
+                                <script>
+                                    var audio = document.querySelector("audio");
+                                    var src = audio.firstElementChild
+
+                                    src.addEventListener('error', function(evt) {
+                                        console.log(evt);
+                                        document.getElementById('my-audio').style.display = 'none';
+                                        document.getElementById('audio-warning').style.display = 'block';
+                                    });
+                                </script>
                             {% endif %}
                             
                             {% if caption %}
                             
-                                <div class="mx-auto mt-0">
+                                <div class="mx-auto mt-1">
                                     <div class="flex justify-center text-gray-300 font-mono text-xs lg:text-sm xl:text-lg">
                                         <p class="text-left w-full rounded p-4 bg-gray-900 shadow-lg"> {{ caption|safe }} </p>
                                     </div>
@@ -29,7 +75,7 @@
                                             {% for row in reply_btns %}
                                                 <div class="flex justify-center">
                                                     {% for btn in row %}
-                                                        <a class="p-4 mx-2 my-1 flex-1 border rounded bg-white border-blue-500 text-center text-blue-500 hover:bg-blue-500 hover:text-white" href="{{ btn.url }}" target="_blank"> {{btn.text}} </a>
+                                                        <a class="p-2 m-1 flex-1 border rounded bg-white border-blue-500 text-center text-blue-500 hover:bg-blue-500 hover:text-white transition ease-in duration-150" href="{{ btn.url }}" target="_blank"> {{btn.text}} </a>
                                                     {% endfor %}
                                                 </div>
                                             {% endfor %}
@@ -56,7 +102,7 @@
                                     {% for row in reply_btns %}
                                         <div class="flex justify-center">
                                             {% for btn in row %}
-                                                <a class="p-4  mx-2 my-1 flex-1 border rounded bg-white border-blue-500 text-center text-blue-500 hover:bg-blue-500 hover:text-white" href="{{ btn.url }}" target="_blank"> {{btn.text}} </a>
+                                                <a class="p-2  m-1 flex-1 border rounded bg-white border-blue-500 text-center text-blue-500 hover:bg-blue-500 hover:text-white transition ease-in duration-150" href="{{ btn.url }}" target="_blank"> {{btn.text}} </a>
                                             {% endfor %}
                                         </div>
                                     {% endfor %}
@@ -75,43 +121,4 @@
                 
             </div>
             
-        <script>
-            var myFP = fluidPlayer(
-                'my-video-player',{
-                    "layoutControls": {
-                        "controlBar": {
-                            "autoHideTimeout": 3,
-                            "animated": true,
-                            "autoHide": true
-                        },
-                        "logo": {
-                            "imageUrl": null,
-                            "position": "top left",
-                            "clickUrl": null,
-                            "opacity": 1
-                        },
-                        "htmlOnPauseBlock": {
-                            "html": null,
-                            "height": null,
-                            "width": null
-                        },
-                        "autoPlay": false,
-                        "mute": true,
-                        "allowTheatre": true,
-                        "playPauseAnimation": true,
-                        "playbackRateEnabled": true,
-                        "allowDownload": false,
-                        "playButtonShowing": true,
-                        "fillToContainer": true,
-                        "posterImage": ""
-                    },
-                    "vastOptions": {
-                        "adList": [],
-                        "adCTAText": false,
-                        "adCTATextPosition": ""
-                    }
-                }
-            );
-        </script>
-
 {% include 'footer.html' %}
